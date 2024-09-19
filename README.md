@@ -1,2 +1,1 @@
-# walletwatcher
-remember to use DJANGO REST AND REACT/NEXT
+# React + TypeScript + Vite + Express + MongoDB
