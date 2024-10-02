@@ -7,6 +7,7 @@ export const ExpenseTracker = () => {
   //const [curExpenseName, setCurExpenseName] = useState("");
   //const [curExpenseCost, setCurExpenseCost] = useState(0);
   const [limit, setLimit] = useState(0.0)
+  const [budget, setBudget] = useState(0.0)
   const [foodCost, setFoodCost] = useState(0.0)
   const [entCost, setEntCost] = useState(0.0)
   const [transCost, setTransCost] = useState(0.0)
@@ -14,10 +15,10 @@ export const ExpenseTracker = () => {
   const [limitLable, setLimitLabel] = useState("Limit")
   const [limitColour, setLimitColour] = useState<FloatingLabelColor>("default")
   const graphData = [
-    { id: 0, value: limit, label: 'Budget Left' },
+    { id: 0, value: budget, label: 'Budget Left' },
     { id: 1, value: foodCost, label: 'Food' },
     { id: 3, value: entCost, label: 'Entertainment'},
-    { id: 4, value: transCost, label: 'Transportaion'},
+    { id: 4, value: transCost, label: 'Transportation'},
     { id: 5, value: emergCost, label: 'Emergency'},
   ]
 
@@ -40,6 +41,7 @@ export const ExpenseTracker = () => {
 
         if (isPostativenumber(moneyLimit)) {
           setLimit(parseFloat(moneyLimit))
+          setBudget(parseFloat(moneyLimit))
           graphData[0].value = parseFloat(moneyLimit)
           setLimitLabel("Limit");
           setLimitColour("default");
@@ -59,23 +61,41 @@ export const ExpenseTracker = () => {
           name: { value: string };
           cost: { value: string};
           type: { value: string};
-        }
+        } 
+        const total = foodCost + entCost + transCost + emergCost + parseFloat(target.cost.value);
 
         console.log(target.name.value);
         console.log(target.cost.value);
         console.log(target.type.value);
-
-        if (target.type.value === "Food") {
-          const temp = foodCost + parseFloat(target.cost.value);
-          setFoodCost(temp);
+        if (total <= limit) {
+          setBudget(budget - parseFloat(target.cost.value))
+          if (target.type.value === "Food") {
+            console.log("FOOD")
+            const temp = foodCost + parseFloat(target.cost.value);
+            setFoodCost(temp);
+          } else if(target.type.value === "Entertainment"){
+            console.log("ENT")
+            const temp = entCost + parseFloat(target.cost.value);
+            setEntCost(temp);
+          } else if(target.type.value === "Transportation") {
+            console.log("TRANSPORATATION");
+            const temp = transCost + parseFloat(target.cost.value);
+            setTransCost(temp);
+          } else if(target.type.value === "Emergency") {
+            console.log("EMERGENCY")
+            const temp = emergCost + parseFloat(target.cost.value);
+            setEmergCost(temp);
+          }
         }
+
+
       }}>
         <Select id="expenseType" required name="type">
           <option>Expense Type</option>
           <option>Food</option>
           <option>Entertainment</option>
-          <option value="">Transportation</option>
-          <option value="">Emergency</option>
+          <option>Transportation</option>
+          <option>Emergency</option>
         </Select>
         <FloatingLabel className="" variant="outlined" label="Name" name="name" />
         <FloatingLabel className="" variant="outlined" label="Est. Cost"  name="cost"/>
