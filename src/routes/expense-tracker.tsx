@@ -3,9 +3,18 @@ import { FloatingLabel, Select, Button, Table, FloatingLabelColor } from "flowbi
 import { useState } from "react";
 import { PieChart } from '@mui/x-charts/PieChart';
 
+type tableData = {
+  name: string;
+  price: number;
+  type: "Food" | "Entertainment" | "Transportation" | "Emergency"
+}
+
 export const ExpenseTracker = () => {
   //const [curExpenseName, setCurExpenseName] = useState("");
   //const [curExpenseCost, setCurExpenseCost] = useState(0);
+  const [tableDisplay,setTableDisplay] = useState<tableData[]>([
+    {name: "Test", price: 13.4, type: "Food"}
+  ])
   const [limit, setLimit] = useState(0.0)
   const [budget, setBudget] = useState(0.0)
   const [foodCost, setFoodCost] = useState(0.0)
@@ -63,10 +72,10 @@ export const ExpenseTracker = () => {
           type: { value: string};
         } 
         const total = foodCost + entCost + transCost + emergCost + parseFloat(target.cost.value);
-
         console.log(target.name.value);
         console.log(target.cost.value);
         console.log(target.type.value);
+
         if (total <= limit) {
           setBudget(budget - parseFloat(target.cost.value))
           if (target.type.value === "Food") {
@@ -87,8 +96,6 @@ export const ExpenseTracker = () => {
             setEmergCost(temp);
           }
         }
-
-
       }}>
         <Select id="expenseType" required name="type">
           <option>Expense Type</option>
@@ -126,12 +133,20 @@ export const ExpenseTracker = () => {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            <Table.Row className=" dark:border-gray-700 dark:bg-gray-800">
-            </Table.Row>
-            <Table.Row className="dark:border-gray-700 dark:bg-gray-800">
-            </Table.Row>
-            <Table.Row className="dark:border-gray-700 dark:bg-gray-800">
-            </Table.Row>
+            {tableDisplay.map(element =>(
+              <Table.Row className=" dark:border-gray-700 dark:bg-gray-800">
+                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {element.name}
+                </Table.Cell>
+                <Table.Cell>{element.price}</Table.Cell>
+                <Table.Cell>{element.type}</Table.Cell>
+                <Table.Cell>
+                  <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                    remove
+                  </a>
+                </Table.Cell>
+              </Table.Row>
+            ))}
           </Table.Body>
         </Table>
       </div>
